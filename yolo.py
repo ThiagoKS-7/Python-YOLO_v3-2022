@@ -1,31 +1,40 @@
 import os
 import src.utils.checker_util as ch
 from src.controllers.detection_controller import YOLO_img_to_base64_response as yolo_b64
-from flask import Flask, request, Response, jsonify, send_from_directory, abort
-from flask_cors import CORS
+from fastapi import FastAPI, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
+from flask import Response, abort
 
 folder = os.path.abspath('.') + "/weights"
 
 
-def get_image():
+def get_image(images):
 	ch.Weight_checker.start(folder)
-	return yolo_b64.predict(request.files["images"])
+	return yolo_b64.predict(images)
+
+app = FastAPI()
+
+origins = [
+    "http://localhost",
+    "http://localhost:5000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
-app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
-
-
-@app.route("/image", methods=["GET", "POST"])
-def get():
-	try:
-		return Response(response=get_image(), status=200, mimetype="image/png")
-	except FileNotFoundError:
-		abort(404)
-
-
+@app.get("/image")
+async def image(images: UploadFile):
+	print(images)
+	# return get_image(images)
 
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    uvicorn.run(app, host="0.0.0.0", port=5000)

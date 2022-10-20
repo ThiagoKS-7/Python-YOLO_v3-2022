@@ -1,6 +1,7 @@
 import time
 from absl import app, logging
 import cv2
+import shutil
 import numpy as np
 import tensorflow as tf
 from yolov3_tf2.models import YoloV3, YoloV3Tiny
@@ -31,9 +32,7 @@ print("classes loaded")
 
 class YOLO_img_to_base64_response(object):
     def predict(image):
-        image_name = 'meme.jpg' # image.filename
-        image.save(os.path.join(os.getcwd(), image_name))
-        img_raw = tf.image.decode_image(open(image_name, "rb").read(), channels=3)
+        img_raw = tf.image.decode_image(image.read(), channels=3)
         img = tf.expand_dims(img_raw, 0)
         img = transform_images(img, img_size)
 
