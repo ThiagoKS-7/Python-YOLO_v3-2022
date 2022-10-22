@@ -4,12 +4,14 @@ import cv2
 import shutil
 import numpy as np
 import tensorflow as tf
-from yolov3_tf2.models import YoloV3, YoloV3Tiny
-from yolov3_tf2.dataset import transform_images, load_tfrecord_dataset
-from yolov3_tf2.utils import draw_outputs
+from services.yolo.yolov3_tf2.models import YoloV3, YoloV3Tiny
+from services.yolo.yolov3_tf2.dataset import transform_images, load_tfrecord_dataset
+from services.yolo.yolov3_tf2.utils import draw_outputs
 import os
 import base64
-from src.parameters import get_YOLO_img_to_base64_response_params as get_Yolo
+from services.yolo.src.parameters import (
+    get_YOLO_img_to_base64_response_params as get_Yolo,
+)
 
 classes_path, weights_path, tiny, img_size, num_classes, output_path = get_Yolo()
 
@@ -32,10 +34,12 @@ print("classes loaded")
 
 class YOLO_img_to_base64_response(object):
     def predict(image):
-        img_raw = tf.image.decode_image(image.read(), channels=3)
+        img_raw = tf.image.decode_image(image, channels=3)
         img = tf.expand_dims(img_raw, 0)
         img = transform_images(img, img_size)
-
+        cv2.imshow("teste", img_raw.numpy())
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
         t1 = time.time()
         boxes, scores, classes, nums = yolo(img)
         t2 = time.time()
@@ -58,5 +62,4 @@ class YOLO_img_to_base64_response(object):
         _, img_encoded = cv2.imencode(".png", img)
         response = img_encoded.tostring()
 
-        os.remove(image_name)
         return base64.b64encode(response)

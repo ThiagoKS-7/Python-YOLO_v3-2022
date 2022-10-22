@@ -1,4 +1,4 @@
-from src.utils.train_weights import Trainer
+from services.yolo.src.utils.train_weights import Trainer
 import os
 weights_size = 248007048 # yolo.weights size (242.195kb)
 
