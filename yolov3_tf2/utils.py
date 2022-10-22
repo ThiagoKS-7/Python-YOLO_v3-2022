@@ -109,7 +109,7 @@ def draw_outputs(img, outputs, class_names):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img = Image.fromarray(img)
     draw = ImageDraw.Draw(img)
-    font = ImageFont.truetype(font='./data/fonts/futur.ttf',
+    font = ImageFont.truetype(font='./services/yolo/data/fonts/futur.ttf',
                               size=(img.size[0] + img.size[1]) // 100)
     for i in range(nums):
         color = colors[int(classes[i])]
