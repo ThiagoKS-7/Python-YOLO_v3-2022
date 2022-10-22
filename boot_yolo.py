@@ -10,9 +10,13 @@ import uvicorn
 folder = os.path.abspath(".") + "/weights"
 
 
-def get_image(images):
-    ch.Weight_checker.start(folder)
-    return yolo_b64.predict(images)
+class YOLO(object):
+    def __init__(self, image):
+        self.image = image
+
+    def get_image(self):
+        ch.Weight_checker.start(folder)
+        return yolo_b64.predict(self.image)
 
 
 app = FastAPI()
@@ -33,7 +37,7 @@ app.add_middleware(
 
 @app.get("/image")
 async def image(images: UploadFile):
-    return get_image(images)
+    return YOLO(await images.read()).get_image()
 
 
 if __name__ == "__main__":
