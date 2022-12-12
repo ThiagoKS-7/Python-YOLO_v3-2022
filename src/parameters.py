@@ -2,7 +2,7 @@ import os
 def get_YOLO_img_to_base64_response_params():
 	# customize your API through the following parameters
 	classes_path = os.path.abspath('.') + "/services/yolo/data/labels/coco.names"
-	weights_path = os.path.abspath('.') + "/weights/yolov3.tf"
+	weights_path = os.path.abspath('.') + "/weights/yolov3-tiny.tf"
 	tiny = False  # set to True if using a Yolov3 Tiny model
 	size = 416  # size images are resized to for model
 	output_path = (
