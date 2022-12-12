@@ -43,19 +43,9 @@ class YOLO_img_to_base64_response(object):
         boxes, scores, classes, nums = yolo(img)
         t2 = time.time()
         print("time: {}".format(t2 - t1))
-
-        print("detections:")
-        for i in range(nums[0]):
-            print(
-                "\t{}, {}, {}".format(
-                    class_names[int(classes[0][i])],
-                    np.array(scores[0][i]),
-                    np.array(boxes[0][i]),
-                )
-            )
         img = cv2.cvtColor(img_raw.numpy(), cv2.COLOR_RGB2BGR)
         img = draw_outputs(img, (boxes, scores, classes, nums), class_names)
         print("Image successfully created! Encoding to base64...")
         _, img_encoded = cv2.imencode(".png", img)
         response = img_encoded.tostring()
-        return { "status": 200, "data": base64.b64encode(response), "message": "success" }
+        return base64.b64encode(response)

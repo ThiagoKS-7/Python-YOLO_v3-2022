@@ -15,8 +15,8 @@ class YOLO(object):
         self.image = image
 
     def get_image(self):
-        ch.Weight_checker.start(folder)
-        return yolo_b64.predict(self.image)
+        ch.Weight_checker.start(folder)     
+        return { "status": 200, "message": "success", "data": yolo_b64.predict(self.image) }
 
 
 app = FastAPI()
@@ -37,7 +37,9 @@ app.add_middleware(
 
 @app.get("/image")
 async def image(images: UploadFile):
-    return YOLO(await images.read()).get_image()
+    response = await YOLO(images.read()).get_image()
+    print(response)
+    return { "status": 200, "message": "success","data": response }
 
 
 if __name__ == "__main__":
